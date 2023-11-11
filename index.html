@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        background: linear-gradient(to left, rgb(83, 81, 81), black);
+      }
+      /* h1 styling */
+      h1 {
+        width: 10.1em;
+        padding: 10px;
+        margin: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background: linear-gradient(90deg, #03a9f4, #0012b1, #03a9f4);
+
+        font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+          "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+        font-weight: bold;
+      }
+
+      /* Style for the input area */
+      #htmlInput {
+        background: transparent;
+        color: white;
+        resize: none;
+        width: 91vw;
+        height: 30vh;
+        padding: 10px;
+        font-family: monospace; /* Use a monospace font for better code formatting */
+        white-space: pre; /* Preserve whitespace formatting */
+      }
+
+      /* Style for the suggestion bar */
+      #suggestionBar {
+        background-color: #303030;
+        color: white;
+        height: 5em;
+        width: 20.4em;
+        position: relative; /* Change from 'absolute' to 'relative' */
+
+        border-top: 1px solid #ccc;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden; /* Allow suggestions to wrap to the next line */
+      }
+
+      /* Style for each suggestion item */
+      .suggestion-item {
+        padding: 5px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+      }
+
+      /* save button css */
+      #saveButton {
+        position: relative;
+        left: 1%;
+        top: 4.4em;
+        bottom: 10px;
+        width: 100px;
+        height: 40px;
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.349);
+        background-color: rgb(12, 12, 12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition-duration: 0.3s;
+        overflow: hidden;
+      }
+
+      .IconContainer {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(
+          to bottom,
+          rgb(255, 136, 255),
+          rgb(172, 70, 255)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        z-index: 2;
+        transition-duration: 0.3s;
+      }
+
+      .icon {
+        border-radius: 1px;
+      }
+
+      .text {
+        height: 100%;
+        width: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        z-index: 1;
+        transition-duration: 0.3s;
+        font-size: 1.04em;
+      }
+
+      #saveButton:hover .IconContainer {
+        width: 90px;
+        border-radius: 40px;
+        transition-duration: 0.3s;
+      }
+
+      #saveButton:hover .text {
+        transform: translate(10px);
+        width: 0;
+        font-size: 0;
+        transition-duration: 0.3s;
+      }
+
+      #saveButton:active {
+        transform: scale(0.95);
+        transition-duration: 0.3s;
+      }
+
+      /* run button css */
+      #runButton {
+        position: relative;
+        left: 68%;
+        top: 24px;
+        text-decoration: none;
+        position: relative;
+        border: none;
+        font-size: 14px;
+        font-family: inherit;
+        color: #fff;
+        font-weight: bold;
+        width: 6em;
+        height: 2em;
+        line-height: 2em;
+        text-align: center;
+        background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+        background-size: 300%;
+        border-radius: 30px;
+        z-index: 1;
+      }
+
+      #runButton:hover {
+        animation: ani 8s linear infinite;
+        border: none;
+      }
+
+      @keyframes ani {
+        0% {
+          background-position: 0%;
+        }
+
+        100% {
+          background-position: 400%;
+        }
+      }
+
+      #runButton:before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        z-index: -1;
+        background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+        background-size: 400%;
+        border-radius: 35px;
+        transition: 1s;
+      }
+
+      #runButton:hover::before {
+        filter: blur(20px);
+      }
+
+      #runButton:active {
+        background: linear-gradient(32deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+      }
+      /* import button styling  */
+      #importButton {
+        position: relative;
+        left: 31%;
+        top: 1.4em;
+        text-decoration: none;
+        position: relative;
+        border: none;
+        font-size: 14px;
+        font-family: inherit;
+        color: #fff;
+        font-weight: bold;
+        width: 15em;
+        height: 2em;
+        padding: 5px 0px 3px 33px;
+        line-height: 2em;
+        text-align: center;
+        background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+        background-size: 300%;
+        border-radius: 20px;
+      }
+      #importButton:hover {
+        animation: ani 8s linear infinite;
+        border: none;
+      }
+
+      @keyframes ani {
+        0% {
+          background-position: 0%;
+        }
+
+        100% {
+          background-position: 400%;
+        }
+      }
+
+      #importButton:before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        z-index: -1;
+        background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+        background-size: 400%;
+        border-radius: 35px;
+        transition: 1s;
+      }
+
+      #importButton:hover::before {
+        filter: blur(20px);
+      }
+
+      #importButton:active {
+        background: linear-gradient(32deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+      }
+
+      /* html boilerplate button */
+      #boilerplateButton {
+        position: relative;
+        bottom: 6.5em;
+        left: .4em;
+        --hover-shadows: 16px 16 33px #121212, -16px -16px 33px #303030;
+        --accent: fuchsia;
+        font-weight: bold;
+        letter-spacing: 0.1em;
+        border: none;
+        border-radius: 1.1em;
+        background-color: #212121;
+        color: white;
+        padding: 1em 1em;
+        transition: box-shadow ease-in-out 0.3s,
+          background-color ease-in-out 0.1s, letter-spacing ease-in-out 0.1s,
+          transform ease-in-out 0.1s;
+        box-shadow: 13px 13px 10px #1c1c1c, -13px -13px 10px #262626;
+      }
+
+      #boilerplateButton:hover {
+        box-shadow: var(--hover-shadows);
+      }
+
+      #boilerplateButton:active {
+        box-shadow: var(--hover-shadows), var(--accent) 0px 0px 30px 5px;
+        background-color: var(--accent);
+        transform: scale(0.95);
+      }
+
+      /* output frame */
+      #outputFrame {
+        width: 96vw;
+        height: 30vh;
+background: white;
+color: black;
+        position: relative;
+      }
+      /* footer styling */
+      footer {
+        position: relative;
+        left: 1em;
+        top: 1em;
+        text-align: center;
+        color: white;
+      }
+
+      .links {
+        display: flex;
+        flex-direction: column;
+        padding: 2px;
+        position: relative;
+        top: 2em;
+        left: 1em;
+      }
+      .links a {
+        padding: 5px;
+        color: white;
+        text-decoration: none;
+      }
+      .links a svg {
+        padding: 1px 14px;
+        position: relative;
+        top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+   
+
+    <!-- Keyboard-like input with suggestions -->
+    <textarea
+      id="htmlInput"
+      rows="10"
+      placeholder="Start typing HTML..."
+    ></textarea>
+
+    <!-- Suggestion bar -->
+    <div id="suggestionBar">Suggessionss.....</div>
+
+    <!-- "Run" button to display the HTML output -->
+    <!-- <button id="runButton">Run</button> -->
+    <button id="runButton">Run</button>
+
+    <!-- "Save File" button to save HTML code to a file using the File System Access API -->
+    <!-- <button id="saveButton">Save File Locally</button> -->
+
+    <!-- modified save button -->
+    <button id="saveButton">
+      <span class="IconContainer">
+        <svg viewBox="0 0 384 512" height="0.9em" class="icon">
+          <path
+            d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"
+          ></path>
+        </svg>
+      </span>
+      <p class="text">Save</p>
+    </button>
+
+    <!-- "Import HTML File" button to load HTML content from a file -->
+    <!-- <label for="importButton">select html file you want to edit</label> -->
+    <input type="file" id="importButton" accept=".html" />
+    
+    <!-- "HTML Boilerplate" button to insert boilerplate code -->
+    <button id="boilerplateButton">HTML Boilerplate</button>
+    
+    <!-- Inbuilt browser (iframe) to display the HTML output -->
+    <iframe id="outputFrame"></iframe>
+
+
+    <footer>
+      &copy;Copyright 2023-24 All Rights <br> Reserved to yt_sniper_019 & webmax.js
+    </footer>
+
+
+    <div class="links">
+      <a
+        href="https://instagram.com/yt_sniper_019?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D">
+        <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="1em"
+        viewBox="0 0 448 512"
+      >
+        <style>
+          svg {
+            fill: #ffffff;
+          }
+        </style>
+        <path
+          d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
+        /></svg>
+          yt_sniper_019</a
+      >
+      <a
+        href="https://instagram.com/maxweb.js?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="1em"
+          viewBox="0 0 448 512"
+        >
+          <style>
+            svg {
+              fill: #ffffff;
+            }
+          </style>
+          <path
+            d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
+          /></svg>
+          maxweb.js</a
+      >
+    </div>
+
+    <script>
+      // List of suggested HTML tags
+      var htmlTags = [
+        "a",
+        "abbr",
+        "audio",
+        "b",
+        "base",
+        "blockquote",
+        "body",
+        "br",
+        "button",
+        "dir",
+        "div",
+        "fieldset",
+        "figcaption",
+        "figure",
+        "font",
+        "footer",
+        "form",
+        "frame",
+        "frameset",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "head",
+        "header",
+        "hr",
+        "html",
+        "i",
+        "iframe",
+        "img",
+        "input",
+        "li",
+        "link",
+        "main",
+        "script",
+        "span",
+        "strike",
+        "strong",
+        "style",
+        "tbody",
+        "td",
+        "textarea",
+        "tfoot",
+        "th",
+        "thead",
+        "ul",
+        "video",
+      ];
+
+      var inputArea = document.getElementById("htmlInput");
+
+      // Function to run HTML code in the iframe
+      document
+        .getElementById("runButton")
+        .addEventListener("click", function () {
+          var htmlCode = inputArea.value;
+          var outputFrame = document.getElementById("outputFrame");
+          outputFrame.srcdoc = htmlCode;
+        });
+
+      // Function to save HTML code to a file using the File System Access API
+      document
+        .getElementById("saveButton")
+        .addEventListener("click", async function () {
+          var htmlCode = inputArea.value;
+
+          try {
+            // Request access to the file system
+            const fileHandle = await window.showSaveFilePicker();
+
+            // Create a writable stream to the selected file
+            const writableStream = await fileHandle.createWritable();
+
+            // Write the HTML code to the file
+            await writableStream.write(htmlCode);
+            await writableStream.close();
+
+            alert("HTML code has been saved locally.");
+          } catch (err) {
+            console.error(err);
+          }
+        });
+
+      // Function to load HTML content from a file
+      document
+        .getElementById("importButton")
+        .addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+
+          reader.onload = function () {
+            inputArea.value = reader.result;
+          };
+
+          reader.readAsText(file);
+        });
+
+      inputArea.addEventListener("input", function () {
+        var currentText = inputArea.value.toLowerCase();
+        var suggestions = [];
+
+        // Filter HTML tags that match what's typed
+        htmlTags.forEach(function (tag) {
+          if (tag.startsWith(currentText)) {
+            suggestions.push(tag);
+          }
+        });
+
+        // Display suggestions in the suggestion bar
+        suggestionBar.innerHTML = "";
+        suggestions.forEach(function (tag) {
+          var suggestion = document.createElement("div");
+          suggestion.className = "suggestion-item";
+          suggestion.textContent = "<" + tag + "></" + tag + ">";
+          suggestion.addEventListener("click", function () {
+            insertSuggestion(tag);
+          });
+          suggestionBar.appendChild(suggestion);
+        });
+      });
+
+      // Function to insert a suggestion into the input area
+      function insertSuggestion(tag) {
+        var currentText = inputArea.value;
+        var cursorPosition = inputArea.selectionStart;
+        var newText =
+          currentText.substring(0, cursorPosition) +
+          "<" +
+          tag +
+          "></" +
+          tag +
+          ">" +
+          currentText.substring(cursorPosition);
+        inputArea.value = newText;
+        inputArea.focus();
+      }
+
+      // Function to insert HTML boilerplate
+      document
+        .getElementById("boilerplateButton")
+        .addEventListener("click", function () {
+          var boilerplate = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+/* input css here */
+
+</style>
+<body>
+<!-- input HTML here -->
+
+</body>
+</html>`;
+
+inputArea.value = boilerplate;
+        });
+    </script>
+  </body>
+</html>
